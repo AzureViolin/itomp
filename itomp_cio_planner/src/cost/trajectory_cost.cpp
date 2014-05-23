@@ -73,10 +73,13 @@ void TrajectoryCost::init(const EvaluationData* data)
 void TrajectoryCost::computeCostSum(const EvaluationData* data, Eigen::VectorXd& costData, double& sum)
 {
   sum = 0.0;
+  if (is_enabled_)
+  {
 	for (int i = 1; i <= data->getNumPoints() - 2; i++)
 	{
 	  sum += costData(i);
 	}
+  }
 }
 
 void TrajectoryCost::compute(const EvaluationData* data, Eigen::VectorXd& costData, double& sum)
@@ -162,6 +165,11 @@ double TrajectoryPhysicsViolationCost::getWeight() const
 }
 ////////////////////////////////////////////////////////////////////////////////
 
+void TrajectoryGoalPoseCost::init(const EvaluationData* data)
+{
+    initial_trajectory_ = data->getFullTrajectory()->getTrajectory();
+}
+
 void TrajectoryGoalPoseCost::doCompute(const EvaluationData* data, Eigen::VectorXd& costData)
 {
   /*
@@ -185,6 +193,15 @@ void TrajectoryGoalPoseCost::doCompute(const EvaluationData* data, Eigen::Vector
 		costs_(i) = goal_pose_cost / evaluator->num_points_ - 2;
 	}
 	*/
+
+    for (int i = 1; i < data->getNumPoints() - 2; ++i)
+    {
+        costData(i) = 0;
+        for (int j = 0; j < 3; ++j)
+            costData(i) += ((*data->getFullTrajectory())(i, j) - initial_trajectory_(i, j)) *
+                    ((*data->getFullTrajectory())(i, j) - initial_trajectory_(i, j));
+        costData(i) = std::sqrt(costData(i));
+    }
 }
 
 double TrajectoryGoalPoseCost::getWeight() const

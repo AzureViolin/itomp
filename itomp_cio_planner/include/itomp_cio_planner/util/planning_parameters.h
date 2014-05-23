@@ -103,6 +103,7 @@ private:
   double planning_time_limit_;
   int max_iterations_;
   int max_iterations_after_collision_free_;
+public:
   double smoothness_cost_weight_;
   double obstacle_cost_weight_;
   double state_validity_cost_weight_;
@@ -113,6 +114,7 @@ private:
   double goal_pose_cost_weight_;
   double com_cost_weight_;
   double ftr_cost_weight_;
+private:
   bool animate_path_;
   double smoothness_cost_velocity_;
   double smoothness_cost_acceleration_;

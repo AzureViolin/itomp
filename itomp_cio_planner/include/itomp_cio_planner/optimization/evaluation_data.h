@@ -63,6 +63,7 @@ public:
   std::vector<KDL::Vector> Torques_;
   std::vector<std::vector<Vector4d> > contactViolationVector_;
   std::vector<std::vector<KDL::Vector> > contactPointVelVector_;
+  std::vector<std::vector<KDL::Vector> > contact_forces_;
 
   std::vector<double> stateContactInvariantCost_;
   std::vector<double> statePhysicsViolationCost_;

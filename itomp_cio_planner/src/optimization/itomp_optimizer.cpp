@@ -55,8 +55,26 @@ bool ItompOptimizer::optimize()
   updateBestTrajectory(evaluation_manager_.getTrajectoryCost(true));
   ++iteration_;
 
-  while (iteration_ < 1)//PlanningParameters::getInstance()->getMaxIterations())
+  while (iteration_ < 2)//PlanningParameters::getInstance()->getMaxIterations())
   {
+      ++ iteration_;
+      if (iteration_ == 0)
+      {
+          PlanningParameters::getInstance()->smoothness_cost_weight_ = 0.001;
+          PlanningParameters::getInstance()->contact_invariant_cost_weight_ = 0.0;
+          PlanningParameters::getInstance()->physics_violation_cost_weight_ = 0.0;
+          PlanningParameters::getInstance()->ftr_cost_weight_ = 0.0;
+          PlanningParameters::getInstance()->goal_pose_cost_weight_ = 0.1;
+      }
+      else
+      {
+          best_group_trajectory_cost_ = std::numeric_limits<double>::max();
+          PlanningParameters::getInstance()->smoothness_cost_weight_ = 0.0001;
+          PlanningParameters::getInstance()->contact_invariant_cost_weight_ = 1.0;
+          PlanningParameters::getInstance()->physics_violation_cost_weight_ = 1.0;
+          //PlanningParameters::getInstance()->ftr_cost_weight_ = 0.1;
+          PlanningParameters::getInstance()->goal_pose_cost_weight_ = 0.0;
+      }
     improvement_manager_->runSingleIteration(iteration_);
     is_succeed_ = evaluation_manager_.isLastTrajectoryFeasible();
     ROS_INFO("We think trajectory %d is feasible: %s", trajectory_index_, (is_succeed_ ? "True" : "False"));

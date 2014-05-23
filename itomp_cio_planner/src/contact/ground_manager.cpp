@@ -35,6 +35,49 @@ double interpolateSqrt(double x, double x1, double x2, double y1, double y2)
 
 void GroundManager::getNearestGroundPosition(const KDL::Vector& in, KDL::Vector& out, KDL::Vector& normal, const planning_scene::PlanningScenePtr& planning_scene) const
 {
+    //TEMP HARDCODING FOR SWIMMING POOL SCENARIO
+   /* shapes::Plane planes[3];
+
+    planes[0] = shapes::Plane(0, 0, 1, 0);
+    planes[1] = shapes::Plane(0, 1, 0, -4);
+    planes[2] = shapes::Plane(0, -0.074, -1, -2.8);
+
+    KDL::Vector normals[3];
+
+    KDL::Vector proj_points[3];
+    for (int i = 0; i < 3; ++i)
+    {
+        normals[i] = KDL::Vector(planes[i].a, planes[i].b, planes[i].c);
+        double norm = normals[i].Norm();
+        normals[i].Normalize();
+        double lambda = -dot(normals[i], in) + (planes[i].d/norm);
+        proj_points[i] = lambda * normals[i] + in;
+    }
+
+    if (proj_points[0].y() < 4)
+        proj_points[0].y(4);
+    if (proj_points[1].z() > 0)
+        proj_points[1].z(0);
+    if (proj_points[2].y() > 4)
+    {
+        proj_points[2].y(4);
+        proj_points[2].z(-0.074 * 4 - 2.8);
+    }
+
+    double max_dist = std::numeric_limits<double>::max();
+    for (int i = 0; i < 3; ++i)
+    {
+        double dist = (in - proj_points[i]).Norm();
+        if (dist < max_dist)
+        {
+            out = proj_points[i];
+            normal = normals[i];
+            max_dist = dist;
+        }
+    }*/
+
+
+
     normal = KDL::Vector(0, 0, 1);
     double current_min_distance = std::numeric_limits<double>::max();
     Eigen::Vector3d in_eigen(in.x(), in.y(), in.z());

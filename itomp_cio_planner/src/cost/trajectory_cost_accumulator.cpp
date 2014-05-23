@@ -93,11 +93,12 @@ double TrajectoryCostAccumulator::getTrajectoryCost() const
 
 void TrajectoryCostAccumulator::print(int number) const
 {
-  printf("[%d] Trajectory cost : %f (s=%f, c=%f, ci=%f pv=%f frp=%f)\n", number, getTrajectoryCost(),
+  printf("[%d] Trajectory cost : %f (s=%f, c=%f, ci=%f pv=%f frp=%f g=%f)\n", number, getTrajectoryCost(),
       getTrajectoryCost(TrajectoryCost::COST_SMOOTHNESS), getTrajectoryCost(TrajectoryCost::COST_COLLISION),
       getTrajectoryCost(TrajectoryCost::COST_CONTACT_INVARIANT),
       getTrajectoryCost(TrajectoryCost::COST_PHYSICS_VIOLATION),
-      getTrajectoryCost(TrajectoryCost::COST_FTR));
+      getTrajectoryCost(TrajectoryCost::COST_FTR),
+      getTrajectoryCost(TrajectoryCost::COST_GOAL_POSE));
 
 }
 
@@ -107,6 +108,15 @@ bool TrajectoryCostAccumulator::isFeasible() const
   //return false;
 
   return true;
+}
+
+void TrajectoryCostAccumulator::enableCost(TrajectoryCost::COST_TYPE type, bool value)
+{
+    std::map<TrajectoryCost::COST_TYPE, TrajectoryCostPtr>::const_iterator it = costMap_.find(type);
+    if (it != costMap_.end())
+    {
+        it->second->setEnabled(value);
+    }
 }
 
 }

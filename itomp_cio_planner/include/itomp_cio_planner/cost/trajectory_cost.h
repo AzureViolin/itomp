@@ -33,7 +33,7 @@ public:
 		COST_TYPE_INVALID = COST_TYPES_NUM,
 	};
 
-	TrajectoryCost(COST_TYPE type) : isHardConstraint_(false), type_(type) {}
+    TrajectoryCost(COST_TYPE type) : isHardConstraint_(false), type_(type), is_enabled_(true) {}
 	virtual ~TrajectoryCost() {}
 
 	virtual void init(const EvaluationData* data);
@@ -47,12 +47,16 @@ public:
 
 	static boost::shared_ptr<TrajectoryCost> CreateTrajectoryCost(COST_TYPE type);
 
+    void setEnabled(bool value) { is_enabled_ = value; }
+    bool isEnabled() const { return is_enabled_; }
+
 protected:
 	virtual void doCompute(const EvaluationData* data, Eigen::VectorXd& costData) = 0;
 	void computeCostSum(const EvaluationData* data, Eigen::VectorXd& costData, double& sum);
 
 	bool isHardConstraint_;
 	COST_TYPE type_;
+    bool is_enabled_;
 
 };
 
@@ -127,8 +131,11 @@ public:
 
 	virtual double getWeight() const;
 
+    virtual void init(const EvaluationData* data);
+
 protected:
 	virtual void doCompute(const EvaluationData* data, Eigen::VectorXd& costData);
+    Eigen::MatrixXd initial_trajectory_;
 };
 
 class TrajectoryCoMCost : public TrajectoryCost

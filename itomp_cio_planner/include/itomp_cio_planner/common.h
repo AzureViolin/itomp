@@ -12,6 +12,7 @@
 #include <stddef.h>
 #include <math.h>
 
+#include <fstream>
 #include <boost/shared_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
 

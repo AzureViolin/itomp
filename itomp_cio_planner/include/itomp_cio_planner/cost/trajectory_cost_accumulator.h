@@ -31,6 +31,7 @@ public:
 	double getTrajectoryCost() const;
 
 	bool isFeasible() const;
+    void enableCost(TrajectoryCost::COST_TYPE type, bool value);
 
 	void print(int number) const;
 

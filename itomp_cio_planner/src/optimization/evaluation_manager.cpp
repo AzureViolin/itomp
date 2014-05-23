@@ -860,9 +860,10 @@ std::vector<double> computeFTR(const std::string& group_name, int contact_point_
         Eigen::MatrixXd jacobian_transpose = jacobian.transpose();
 
         // computing direction, first version as COM velocity between poses
-        const KDL::Vector& dir_kdl = data->contact_forces_[i][contact_point_index];
+        const KDL::Vector& dir_kdl = data->CoMVelocities_[i];
+        const KDL::Vector& contact_force = data->contact_forces_[i][contact_point_index];
         Eigen::Vector3d direction(dir_kdl.x(), dir_kdl.y(), dir_kdl.z());
-        if(direction.norm() != 0)
+        if(contact_force.Norm() != 0)
         {
             direction.normalize();
             double ftr = 1 / std::sqrt(direction.transpose() * (jacobian * jacobian_transpose) * direction);
@@ -877,8 +878,9 @@ std::vector<double> computeFTR(const std::string& group_name, int contact_point_
             ftr = (ftr < -10) ? -10 : ftr;
             ftr = (ftr >  10) ?  10 : ftr;
             ftr = (ftr + 10) / 20;
-            cost = dir_kdl.Norm() - ftr;
+            cost = contact_force.Norm() - ftr;
             cost = (cost < 0) ? 0 : cost;
+            cost = (cost > 1) ? 1 : cost;
         }
         trajectory_ftrs.push_back(cost);
     }
@@ -896,7 +898,7 @@ void EvaluationManager::computeFTRs(int begin, int end)
     for(unsigned int i=safe_begin; i< safe_end; ++i)
     {
         int v_index = i-safe_begin;
-        data_->stateFTRCost_[i] = (left_leg_cost[v_index] + right_leg_cost[v_index]) + 0.5*(left_arm_cost[v_index] + right_arm_cost[v_index]) ;
+        data_->stateFTRCost_[i] = ((left_leg_cost[v_index] + right_leg_cost[v_index]) + (left_arm_cost[v_index] + right_arm_cost[v_index])) ;
     }
 
 }
